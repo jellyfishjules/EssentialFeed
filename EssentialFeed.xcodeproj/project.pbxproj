@@ -11,6 +11,7 @@
 		845A4C65250D6CBD000BBD5D /* EssentialFeedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845A4C64250D6CBD000BBD5D /* EssentialFeedTests.swift */; };
 		845A4C67250D6CBD000BBD5D /* EssentialFeed.h in Headers */ = {isa = PBXBuildFile; fileRef = 845A4C59250D6CBD000BBD5D /* EssentialFeed.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		845A4C71250D6CFD000BBD5D /* FeedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845A4C70250D6CFD000BBD5D /* FeedItem.swift */; };
+		845A4C73250D6D70000BBD5D /* FeedLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845A4C72250D6D70000BBD5D /* FeedLoader.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,6 +32,7 @@
 		845A4C64250D6CBD000BBD5D /* EssentialFeedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EssentialFeedTests.swift; sourceTree = "<group>"; };
 		845A4C66250D6CBD000BBD5D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		845A4C70250D6CFD000BBD5D /* FeedItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedItem.swift; sourceTree = "<group>"; };
+		845A4C72250D6D70000BBD5D /* FeedLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedLoader.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,7 +57,6 @@
 		845A4C4C250D6CBD000BBD5D = {
 			isa = PBXGroup;
 			children = (
-				845A4C70250D6CFD000BBD5D /* FeedItem.swift */,
 				845A4C58250D6CBD000BBD5D /* EssentialFeed */,
 				845A4C63250D6CBD000BBD5D /* EssentialFeedTests */,
 				845A4C57250D6CBD000BBD5D /* Products */,
@@ -74,6 +75,8 @@
 		845A4C58250D6CBD000BBD5D /* EssentialFeed */ = {
 			isa = PBXGroup;
 			children = (
+				845A4C70250D6CFD000BBD5D /* FeedItem.swift */,
+				845A4C72250D6D70000BBD5D /* FeedLoader.swift */,
 				845A4C59250D6CBD000BBD5D /* EssentialFeed.h */,
 				845A4C5A250D6CBD000BBD5D /* Info.plist */,
 			);
@@ -199,6 +202,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				845A4C73250D6D70000BBD5D /* FeedLoader.swift in Sources */,
 				845A4C71250D6CFD000BBD5D /* FeedItem.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
