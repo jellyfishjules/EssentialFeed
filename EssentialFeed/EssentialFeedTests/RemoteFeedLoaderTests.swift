@@ -51,8 +51,6 @@ final class RemoteFeedLoaderTests: XCTestCase {
     func test_load_deliversErrorOnNon200HTTPResponse() {
         let (sut, client) = makeSut()
        
-      
-        
         let samples = [199, 201, 300, 400, 500]
         
         samples.enumerated().forEach { index, code in
@@ -75,26 +73,27 @@ final class RemoteFeedLoaderTests: XCTestCase {
     }
     
     private class HTTPClientSpy: HTTPClient {
-        private var messages = [(url: URL, completion: (Error?, HTTPURLResponse?) -> Void)]()
+        private var messages = [(url: URL, completion: (HTTPClientResult) -> Void)]()
       
         var requestedUrls: [URL] {
             return messages.map{ $0.url }
         }
         
-         func get(from url: URL, completion: @escaping (Error?, HTTPURLResponse?) -> Void) {
+         func get(from url: URL, completion: @escaping (HTTPClientResult) -> Void) {
              messages.append((url, completion))
         }
         
         func complete(with error: Error, index: Int) {
-            messages[index].completion(error, nil)
+            messages[index].completion(.failure(error))
         }
         
         func complete(withStatusCode code: Int, index: Int) {
             let response = HTTPURLResponse(url: requestedUrls[index],
                                            statusCode: code,
                                            httpVersion: nil,
-                                           headerFields: nil)
-            messages[index].completion(nil, response)
+                                           headerFields: nil)!
+            
+            messages[index].completion(.success(response))
         }
     }
 }
