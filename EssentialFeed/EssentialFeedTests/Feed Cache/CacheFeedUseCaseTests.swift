@@ -24,9 +24,14 @@ final class CacheFeedUseCaseTests: XCTestCase {
     
     class FeedStore {
         var deleteCachedFeedCallCount = 0
+        var insertCallCount = 0
         
         func deleteCachedFeed() {
             deleteCachedFeedCallCount += 1
+        }
+        
+        func completeDeletion(with: Error, at index: Int = 0) {
+            
         }
     }
     
@@ -43,6 +48,17 @@ final class CacheFeedUseCaseTests: XCTestCase {
         sut.save(items: items)
         
         XCTAssertEqual(store.deleteCachedFeedCallCount, 1)
+    }
+    
+    func test_save_doesNotRequestsCacheInsertionOnDeletionError() {
+        let (sut, store) = makeSUT()
+        let deletionError = anyNSError()
+        let items = [makeUniqueFeedItem(), makeUniqueFeedItem()]
+        
+        sut.save(items: items)
+        store.completeDeletion(with: deletionError)
+        
+        XCTAssertEqual(store.insertCallCount, 0)
     }
     
     // Helpers: -
