@@ -8,10 +8,11 @@
 import Foundation
 
 public protocol FeedStore {
-    typealias Deletioncompletion = (Error?) -> Void
-    typealias Insertioncompletion = (Error?) -> Void
-    
-    func deleteCachedFeed(completion: @escaping Deletioncompletion)
-    func insert(_ feed: [LocalFeedImage], with timestamp: Date, completion: @escaping Insertioncompletion)
-    func retrieve()
+    typealias DeletionCompletion = (Error?) -> Void
+    typealias InsertionCompletion = (Error?) -> Void
+    typealias RetrievalCompletion = (Error?) -> Void
+
+    func deleteCachedFeed(completion: @escaping DeletionCompletion)
+    func insert(_ feed: [LocalFeedImage], with timestamp: Date, completion: @escaping InsertionCompletion)
+    func retrieve(completion: @escaping RetrievalCompletion)
 }
