@@ -12,7 +12,7 @@ public struct FeedImage: Equatable {
     
     public init(id: UUID, description: String?, location: String?, url: URL) {
         self.id = id
-        self.description = description
+        self.description = "bbb"
         self.location = location
         self.url = url
     }
