@@ -200,13 +200,13 @@ final class CadableFeedStoreTests: XCTestCase {
     
     // Helpers: -
     
-    private func makeSUT(storeURL: URL? = nil, file: StaticString = #file, line: UInt = #line) -> CodableFeedStore {
+    private func makeSUT(storeURL: URL? = nil, file: StaticString = #file, line: UInt = #line) -> FeedStore {
         let sut = CodableFeedStore(storeURL ?? testSpecificStoreURL())
         trackForMemoryLeaks(sut, file: file, line: line)
         return sut
     }
     
-    private func expect(_ sut: CodableFeedStore, toRetrieve expectedResult: RetrieveCachedFeedResult, file: StaticString = #file, line: UInt = #line) {
+    private func expect(_ sut: FeedStore, toRetrieve expectedResult: RetrieveCachedFeedResult, file: StaticString = #file, line: UInt = #line) {
         let exp = expectation(description: "Wait for cache retrieval")
         
         sut.retrieve { retrievedResult in
@@ -228,13 +228,13 @@ final class CadableFeedStoreTests: XCTestCase {
         wait(for: [exp], timeout: 1)
     }
     
-    private func expect(_ sut: CodableFeedStore, toRetrieveTwice expectedResult: RetrieveCachedFeedResult, file: StaticString = #file, line: UInt = #line) {
+    private func expect(_ sut: FeedStore, toRetrieveTwice expectedResult: RetrieveCachedFeedResult, file: StaticString = #file, line: UInt = #line) {
         expect(sut, toRetrieve: expectedResult)
         expect(sut, toRetrieve: expectedResult)
     }
     
     @discardableResult
-    private func insert(_ cache: (feed: [LocalFeedImage], timestamp: Date), into sut: CodableFeedStore) -> Error? {
+    private func insert(_ cache: (feed: [LocalFeedImage], timestamp: Date), into sut: FeedStore) -> Error? {
         let exp = expectation(description: "Wait for cache insertion")
         var insertionError: Error?
         sut.insert(cache.feed, with: cache.timestamp) { receivedInsertionError in
@@ -246,7 +246,7 @@ final class CadableFeedStoreTests: XCTestCase {
         return insertionError
     }
     
-    private func deleteCache(from sut: CodableFeedStore) -> Error? {
+    private func deleteCache(from sut: FeedStore) -> Error? {
         let exp = expectation(description: "Wait for cache insertion")
         var deletionError: Error?
         sut.deleteCachedFeed() { receivedDeletionError in
