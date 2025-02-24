@@ -127,19 +127,19 @@ final class CadableFeedStoreTests: XCTestCase {
         let sut = makeSUT()
         var completedOperations = [XCTestExpectation]()
      
-        let exp1 = expectation(description: "Wait for cache insertion")
+        let exp1 = expectation(description: "Operation 1")
         sut.insert(uniqueImageFeed().local, with: Date()) { _ in
             completedOperations.append(exp1)
             exp1.fulfill()
         }
         
-        let exp2 = expectation(description: "Wait for cache deletion")
+        let exp2 = expectation(description: "Operation 2")
         sut.deleteCachedFeed { _ in
             completedOperations.append(exp2)
             exp2.fulfill()
         }
         
-        let exp3 = expectation(description: "Wait for cache insertion")
+        let exp3 = expectation(description: "Operation 3")
         sut.insert(uniqueImageFeed().local, with: Date()) { _ in
             completedOperations.append(exp3)
             exp3.fulfill()
@@ -147,7 +147,7 @@ final class CadableFeedStoreTests: XCTestCase {
         
         waitForExpectations(timeout: 5)
         
-        XCTAssertEqual(completedOperations, [exp1, exp2, exp3])
+        XCTAssertEqual(completedOperations, [exp1, exp2, exp3], "Expected operations to run serially")
     }
     
     // Helpers: -
