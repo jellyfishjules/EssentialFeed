@@ -59,11 +59,15 @@ private class CodableFeedStore {
     
     func insert(_ feed: [LocalFeedImage], with timestamp: Date, completion: @escaping FeedStore.InsertionCompletion)
     {
-        let encoder = JSONEncoder()
-        let cache = Cache(feed: feed.map(CodableFeedImage.init), timestamp: timestamp)
-        let encoded = try! encoder.encode(cache)
-        try! encoded.write(to: storeURL)
-        completion(nil)
+        do {
+            let encoder = JSONEncoder()
+            let cache = Cache(feed: feed.map(CodableFeedImage.init), timestamp: timestamp)
+            let encoded = try encoder.encode(cache)
+            try encoded.write(to: storeURL)
+            completion(nil)
+        } catch {
+            completion(error)
+        }
     }
 }
 
@@ -143,6 +147,14 @@ final class CadableFeedStoreTests: XCTestCase {
         expect(sut, toRetrieve: .found(feed: latestFeed, timestamp: latestTimestamp))
     }
     
+    func test_insert_deliversErrorOnInsertionError() {
+        let invalidStoreUrl = URL(fileURLWithPath: "invalid://storeURL")
+        let sut = makeSUT(storeURL: invalidStoreUrl)
+        
+        let insertionError = insert((feed: uniqueImageFeed().local, timestamp: Date()), into: sut)
+        XCTAssertNotNil(insertionError, "Expected insertion to fail with an error")
+    }
+    
     // Helpers: -
     
     private func makeSUT(storeURL: URL? = nil, file: StaticString = #file, line: UInt = #line) -> CodableFeedStore {
@@ -184,7 +196,6 @@ final class CadableFeedStoreTests: XCTestCase {
         var insertionError: Error?
         sut.insert(cache.feed, with: cache.timestamp) { receivedInsertionError in
             insertionError = receivedInsertionError
-            XCTAssertNil(insertionError, "Expected feed to be inserted successfully")
             exp.fulfill()
         }
         wait(for: [exp], timeout: 1.0)
