@@ -123,6 +123,33 @@ final class CadableFeedStoreTests: XCTestCase {
         expect(sut, toRetrieve: .empty)
     }
     
+    func test_storeSideEffects_runSerially() {
+        let sut = makeSUT()
+        var completedOperations = [XCTestExpectation]()
+     
+        let exp1 = expectation(description: "Wait for cache insertion")
+        sut.insert(uniqueImageFeed().local, with: Date()) { _ in
+            completedOperations.append(exp1)
+            exp1.fulfill()
+        }
+        
+        let exp2 = expectation(description: "Wait for cache deletion")
+        sut.deleteCachedFeed { _ in
+            completedOperations.append(exp2)
+            exp2.fulfill()
+        }
+        
+        let exp3 = expectation(description: "Wait for cache insertion")
+        sut.insert(uniqueImageFeed().local, with: Date()) { _ in
+            completedOperations.append(exp3)
+            exp3.fulfill()
+        }
+        
+        waitForExpectations(timeout: 5)
+        
+        XCTAssertEqual(completedOperations, [exp1, exp2, exp3])
+    }
+    
     // Helpers: -
     
     private func makeSUT(storeURL: URL? = nil, file: StaticString = #file, line: UInt = #line) -> FeedStore {
