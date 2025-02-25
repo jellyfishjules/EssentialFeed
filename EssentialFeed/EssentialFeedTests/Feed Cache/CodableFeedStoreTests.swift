@@ -45,11 +45,11 @@ final class CadableFeedStoreTests: XCTestCase, FailableFeedStoreSpecs {
     func test_retrieve_deliversFailureOnRetrievalError() {
         let storeURL = testSpecificStoreURL()
         let sut = makeSUT(storeURL: storeURL)
-        
+
         let invalidData = "invalidData".data(using: .utf8)!
         try! invalidData.write(to: storeURL, options: .atomic)
         
-        expect(sut, toRetrieve: .failure(anyNSError()))
+        assertThatRetrieveDeliversFailureOnRetrievalError(on: sut)
     }
     
     func test_retrieve_hasNoSideEffectsOnFailure() {
@@ -59,7 +59,7 @@ final class CadableFeedStoreTests: XCTestCase, FailableFeedStoreSpecs {
         let invalidData = "invalidData".data(using: .utf8)!
         try! invalidData.write(to: storeURL, options: .atomic)
         
-        expect(sut, toRetrieveTwice: .failure(anyNSError()))
+        assertThatRetrieveHasNoSideEffectsOnFailure(on: sut)
     }
     
     func test_insert_deliversNoErrorOnEmptyCache() {
