@@ -84,18 +84,14 @@ final class CadableFeedStoreTests: XCTestCase, FailableFeedStoreSpecs {
         let invalidStoreUrl = URL(fileURLWithPath: "invalid://storeURL")
         let sut = makeSUT(storeURL: invalidStoreUrl)
         
-        let insertionError = insert((feed: uniqueImageFeed().local, timestamp: Date()), into: sut)
-        
-        XCTAssertNotNil(insertionError, "Expected insertion to fail with an error")
+        assertThatInsertDeliversFailureOnInsertionError(on: sut)
     }
     
     func test_insert_hasNoSideEffectsOnInsertionError() {
         let invalidStoreUrl = URL(fileURLWithPath: "invalid://storeURL")
         let sut = makeSUT(storeURL: invalidStoreUrl)
         
-        insert((feed: uniqueImageFeed().local, timestamp: Date()), into: sut)
-        
-        expect(sut, toRetrieve: .empty)
+        assertThatInsertHasNoSideEffectsOnInsertionError(on: sut)
     }
     
     func test_delete_deliversNoErrorOnEmptyCache() {
