@@ -27,7 +27,7 @@ public class CoreDataFeedStore: FeedStore {
         
         context.perform {
             do {
-                let managedCache = ManagedCache(context: context)
+                let managedCache = try ManagedCache.newUniqueInstance(in: context)
                 managedCache.timestamp = timestamp
                 managedCache.feed = ManagedFeedImage.images(from: feed, in: context)
                 
@@ -109,6 +109,12 @@ private class ManagedCache: NSManagedObject {
         
         return try context.fetch(request).first
     }
+    
+    static func newUniqueInstance(in context: NSManagedObjectContext) throws -> ManagedCache {
+        try find(in: context).map(context.delete)
+        return ManagedCache(context: context)
+    }
+
 }
 
 @objc(ManagedFeedImage)
