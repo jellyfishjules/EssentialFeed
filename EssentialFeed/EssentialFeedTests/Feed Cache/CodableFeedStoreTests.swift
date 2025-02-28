@@ -8,8 +8,8 @@
 import XCTest
 import EssentialFeed
 
-final class CadableFeedStoreTests: XCTestCase, FailableFeedStoreSpecs {
-    
+final class CodableFeedStoreTests: XCTestCase, FailableFeedStoreSpecs {
+
     override func setUp() {
         setupEmptyStoreState()
     }
@@ -97,7 +97,6 @@ final class CadableFeedStoreTests: XCTestCase, FailableFeedStoreSpecs {
     func test_delete_deliversNoErrorOnEmptyCache() {
         let sut = makeSUT()
         
-        
         assertThatDeleteDeliversNoErrorOnEmptyCache(on: sut)
     }
     
@@ -107,7 +106,7 @@ final class CadableFeedStoreTests: XCTestCase, FailableFeedStoreSpecs {
         assertThatDeleteHasNoSideEffectsOnEmptyCache(on: sut)
     }
     
-    func test_delete_emptiesPreviosulyInsertedCache() {
+    func test_delete_emptiesPreviouslyInsertedCache() {
         let sut = makeSUT()
         
         assertThatDeleteEmptiesPreviosulyInsertedCache(on: sut)
