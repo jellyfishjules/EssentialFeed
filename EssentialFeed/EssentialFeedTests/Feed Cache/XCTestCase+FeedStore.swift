@@ -52,12 +52,12 @@ extension FeedStoreSpecs where Self: XCTestCase {
     
     func assertThatInsertOverridesPreviouslyInsertedCachedValues(on sut: FeedStore, file: StaticString = #file, line: UInt = #line) {
         let firstInsertionError = insert((feed: uniqueImageFeed().local, timestamp:  Date()), into: sut)
-        XCTAssertNil(firstInsertionError, "Expected successful insertion")
+        XCTAssertNil(firstInsertionError, "Expected successful insertion", file: file, line: line)
         
         let latestFeed = uniqueImageFeed().local
         let latestTimestamp = Date()
         let latestInsertionError = insert((feed: latestFeed, timestamp: latestTimestamp), into: sut)
-        XCTAssertNil(latestInsertionError, "Expected successful insertion")
+        XCTAssertNil(latestInsertionError, "Expected successful insertion",file: file, line: line)
         
         expect(sut, toRetrieve: .found(feed: latestFeed, timestamp: latestTimestamp))
     }
@@ -70,7 +70,7 @@ extension FeedStoreSpecs where Self: XCTestCase {
     
     func assertThatDeleteHasNoSideEffectsOnEmptyCache(on sut: FeedStore, file: StaticString = #file, line: UInt = #line) {
         let deletionError = deleteCache(from: sut)
-        XCTAssertNil(deletionError, "Expected deletion to succeed without an error")
+        XCTAssertNil(deletionError, "Expected deletion to succeed without an error", file: file, line: line)
         
         expect(sut, toRetrieve: .empty)
     }
@@ -79,7 +79,7 @@ extension FeedStoreSpecs where Self: XCTestCase {
         insert((feed: uniqueImageFeed().local, timestamp: Date()), into: sut)
         
         let deletionError = deleteCache(from: sut)
-        XCTAssertNil(deletionError, "Expected deletion to succeed without an error")
+        XCTAssertNil(deletionError, "Expected deletion to succeed without an error", file: file, line: line)
         
         expect(sut, toRetrieve: .empty)
     }
@@ -107,7 +107,7 @@ extension FeedStoreSpecs where Self: XCTestCase {
         
         waitForExpectations(timeout: 5)
         
-        XCTAssertEqual(completedOperations, [exp1, exp2, exp3], "Expected operations to run serially")
+        XCTAssertEqual(completedOperations, [exp1, exp2, exp3], "Expected operations to run serially", file: file, line: line)
     }
 }
 
@@ -122,11 +122,11 @@ extension FeedStoreSpecs where Self: XCTestCase {
             case (.empty, .empty), (.failure, .failure):
                 break
             case let (.found(expectedFeed, expectedTimestamp), .found(retrievedFeed, retrievedTimestamp)):
-                XCTAssertEqual(retrievedFeed, expectedFeed)
-                XCTAssertEqual(retrievedTimestamp, expectedTimestamp)
+                XCTAssertEqual(retrievedFeed, expectedFeed, file: file, line: line)
+                XCTAssertEqual(retrievedTimestamp, expectedTimestamp, file: file, line: line)
                 
             default:
-                XCTFail("Expected to retrieve \(expectedResult), got \(retrievedResult) instead")
+                XCTFail("Expected to retrieve \(expectedResult), got \(retrievedResult) instead", file: file, line: line)
             }
             exp.fulfill()
         }
