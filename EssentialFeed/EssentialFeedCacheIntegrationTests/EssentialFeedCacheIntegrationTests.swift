@@ -11,11 +11,9 @@ import EssentialFeed
 final class EssentialFeedCacheIntegrationTests: XCTestCase {
 
   func test_load_deliversNoItemsOnEmptyCache() {
-        
       let sut = makeSUT()
       
       let exp = expectation(description: "waiting for load completion")
-      
       sut.load { result in
           switch result {
           case .success(let items):
