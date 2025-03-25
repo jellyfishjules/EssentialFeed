@@ -40,9 +40,37 @@ final class EssentialFeedCacheIntegrationTests: XCTestCase {
       wait(for: [exp], timeout: 1.0)
     }
     
+    func test_load_deliversItemsSavedOnASeperateInstance() {
+        let sutToPerformSave = makeSUT()
+        let sutToPerformLoad = makeSUT()
+
+        let feed = uniqueImageFeed().models
+        
+        let saveExp = expectation(description: "waiting for save completion")
+        sutToPerformSave.save(feed) { saveError in
+            XCTAssertNil(saveError, "Expected feed to save successfully")
+            saveExp.fulfill()
+        }
+        wait(for: [saveExp], timeout: 1.0)
+      
+        
+        let loadExp = expectation(description: "waiting for load completion")
+        sutToPerformLoad.load { result in
+            switch result {
+            case .success(let items):
+                XCTAssertEqual(items, feed)
+            case  .failure(let error):
+                XCTFail("expected success with empty items, got \(error) instead")
+            }
+            
+            loadExp.fulfill()
+        }
+        wait(for: [loadExp], timeout: 1.0)
+      }
+    
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> LocalFeedLoader {
         let storeBundle = Bundle(for: CoreDataFeedStore.self)
-        let storeUrl = testSpecificStoreUrl()
+        let storeUrl = testSpecificStoreURL()
         let store = try! CoreDataFeedStore(storeURL: storeUrl, bundle: storeBundle)
         let sut = LocalFeedLoader(store: store, currentDate: Date.init)
         trackForMemoryLeaks(store, file: file, line: line)
