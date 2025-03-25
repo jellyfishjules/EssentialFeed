@@ -10,6 +10,19 @@ import EssentialFeed
 
 final class EssentialFeedCacheIntegrationTests: XCTestCase {
 
+    override func setUp() {
+            super.setUp()
+
+            setupEmptyStoreState()
+        }
+
+        override func tearDown() {
+            super.tearDown()
+
+            undoStoreSideEffects()
+        }
+
+    
   func test_load_deliversNoItemsOnEmptyCache() {
       let sut = makeSUT()
       
@@ -37,7 +50,22 @@ final class EssentialFeedCacheIntegrationTests: XCTestCase {
         return LocalFeedLoader(store: store, currentDate: Date.init)
     }
 
-    private func testSpecificStoreUrl() -> URL {
-        return FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!.appendingPathComponent("\(type(of: self)).store")
-    }
+    private func setupEmptyStoreState() {
+            deleteStoreArtifacts()
+        }
+
+        private func undoStoreSideEffects() {
+            deleteStoreArtifacts()
+        }
+
+        private func deleteStoreArtifacts() {
+            try? FileManager.default.removeItem(at: testSpecificStoreURL())
+        }
+    private func testSpecificStoreURL() -> URL {
+            return cachesDirectory().appendingPathComponent("\(type(of: self)).store")
+        }
+
+        private func cachesDirectory() -> URL {
+            return FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
+        }
 }
