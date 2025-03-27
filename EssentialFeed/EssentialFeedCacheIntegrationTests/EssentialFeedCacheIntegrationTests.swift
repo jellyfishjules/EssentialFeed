@@ -34,12 +34,7 @@ final class EssentialFeedCacheIntegrationTests: XCTestCase {
 
         let feed = uniqueImageFeed().models
         
-        let saveExp = expectation(description: "waiting for save completion")
-        sutToPerformSave.save(feed) { saveError in
-            XCTAssertNil(saveError, "Expected feed to save successfully")
-            saveExp.fulfill()
-        }
-        wait(for: [saveExp], timeout: 1.0)
+        save(feed: feed, withLoader: sutToPerformSave)
         
         expect(sut: sutToPerformLoad, toLoad: feed)
       }
@@ -51,22 +46,10 @@ final class EssentialFeedCacheIntegrationTests: XCTestCase {
 
         let firstFeed = uniqueImageFeed().models
         let secondFeed = uniqueImageFeed().models
-
-        let firstSaveExp = expectation(description: "waiting for first save completion")
-        sutToPerformFirstSave.save(firstFeed) { saveError in
-            XCTAssertNil(saveError, "Expected first feed to save successfully")
-            firstSaveExp.fulfill()
-        }
-        wait(for: [firstSaveExp], timeout: 1.0)
         
+        save(feed: firstFeed, withLoader: sutToPerformFirstSave)
+        save(feed: secondFeed, withLoader: sutToPerformSecondSave)
 
-        let secondSaveExp = expectation(description: "waiting for second save completion")
-        sutToPerformSecondSave.save(secondFeed) { saveError in
-            XCTAssertNil(saveError, "Expected second feed to save successfully")
-            secondSaveExp.fulfill()
-        }
-        wait(for: [secondSaveExp], timeout: 1.0)
-        
         expect(sut: sutToPerformLoad, toLoad: secondFeed)
       }
     
@@ -93,6 +76,15 @@ final class EssentialFeedCacheIntegrationTests: XCTestCase {
             exp.fulfill()
         }
         wait(for: [exp], timeout: 1.0)
+    }
+    
+    private func save(feed: [FeedImage], withLoader loader: LocalFeedLoader , file: StaticString = #filePath, line: UInt = #line) {
+        let saveExp = expectation(description: "waiting for save completion")
+        loader.save(feed) { saveError in
+            XCTAssertNil(saveError, "Expected feed to save successfully")
+            saveExp.fulfill()
+        }
+        wait(for: [saveExp], timeout: 1.0)
     }
 
     private func setupEmptyStoreState() {
