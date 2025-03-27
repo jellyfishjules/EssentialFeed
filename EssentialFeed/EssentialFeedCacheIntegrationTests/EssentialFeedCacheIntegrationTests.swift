@@ -9,49 +9,48 @@ import XCTest
 import EssentialFeed
 
 final class EssentialFeedCacheIntegrationTests: XCTestCase {
-
-    override func setUp() {
-            super.setUp()
-
-            setupEmptyStoreState()
-        }
-
-        override func tearDown() {
-            super.tearDown()
-
-            undoStoreSideEffects()
-        }
-
     
-  func test_load_deliversNoItemsOnEmptyCache() {
-      let sut = makeSUT()
-      expect(sut: sut, toLoad: [])
+    override func setUp() {
+        super.setUp()
+        
+        setupEmptyStoreState()
+    }
+    
+    override func tearDown() {
+        super.tearDown()
+        
+        undoStoreSideEffects()
+    }
+    
+    func test_load_deliversNoItemsOnEmptyCache() {
+        let sut = makeSUT()
+        expect(sut: sut, toLoad: [])
     }
     
     func test_load_deliversItemsSavedOnASeperateInstance() {
         let sutToPerformSave = makeSUT()
         let sutToPerformLoad = makeSUT()
-
+        
         let feed = uniqueImageFeed().models
         
         save(feed: feed, withLoader: sutToPerformSave)
         
         expect(sut: sutToPerformLoad, toLoad: feed)
-      }
+    }
     
     func test_save_overridesItemsSavedOnASeperateInstance() {
         let sutToPerformFirstSave = makeSUT()
         let sutToPerformSecondSave = makeSUT()
         let sutToPerformLoad = makeSUT()
-
+        
         let firstFeed = uniqueImageFeed().models
         let secondFeed = uniqueImageFeed().models
         
         save(feed: firstFeed, withLoader: sutToPerformFirstSave)
         save(feed: secondFeed, withLoader: sutToPerformSecondSave)
-
+        
         expect(sut: sutToPerformLoad, toLoad: secondFeed)
-      }
+    }
     
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> LocalFeedLoader {
         let storeBundle = Bundle(for: CoreDataFeedStore.self)
@@ -86,23 +85,23 @@ final class EssentialFeedCacheIntegrationTests: XCTestCase {
         }
         wait(for: [saveExp], timeout: 1.0)
     }
-
+    
     private func setupEmptyStoreState() {
-            deleteStoreArtifacts()
-        }
-
-        private func undoStoreSideEffects() {
-            deleteStoreArtifacts()
-        }
-
-        private func deleteStoreArtifacts() {
-            try? FileManager.default.removeItem(at: testSpecificStoreURL())
-        }
+        deleteStoreArtifacts()
+    }
+    
+    private func undoStoreSideEffects() {
+        deleteStoreArtifacts()
+    }
+    
+    private func deleteStoreArtifacts() {
+        try? FileManager.default.removeItem(at: testSpecificStoreURL())
+    }
     private func testSpecificStoreURL() -> URL {
-            return cachesDirectory().appendingPathComponent("\(type(of: self)).store")
-        }
-
-        private func cachesDirectory() -> URL {
-            return FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
-        }
+        return cachesDirectory().appendingPathComponent("\(type(of: self)).store")
+    }
+    
+    private func cachesDirectory() -> URL {
+        return FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
+    }
 }
